@@ -21,6 +21,90 @@ function loop(series) {
 }
 
 function run() {
+    $('#container').highcharts({
+        chart: {
+            type: 'spline',
+            margin: [70, 50, 60, 80],
+            events: {
+                click: function (e) {
+                    // find the clicked values and the series
+                    //var x = e.xAxis[0].value,
+	            var x = new Date().getTime();
+                    var y = e.yAxis[0].value;
+                    var series = this.series[0];
+
+                    // Add it
+                    series.addPoint([x, y]);
+                }
+            }
+        },
+        title: {
+            text: 'Sensor Trace'
+        },
+        subtitle: {
+            text: 'Click the plot area to add a point. Click a point to remove it.'
+        },
+        xAxis: {
+            type: 'datetime',
+            tickPixelInterval: 150,
+        },
+        yAxis: {
+            title: {
+                text: 'Value'
+            },
+            minPadding: 0.2,
+            maxPadding: 0.2,
+            maxZoom: 60,
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#808080'
+            }]
+        },
+        tooltip: {
+            formatter: function () {
+                return '<b>' + this.series.name + '</b><br/>' +
+                    Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
+                    Highcharts.numberFormat(this.y, 2);
+            }
+        },
+        legend: {
+            enabled: false
+        },
+        exporting: {
+            enabled: false
+        },
+        plotOptions: {
+            series: {
+                lineWidth: 1,
+                point: {
+                    events: {
+                        'click': function () {
+                            if (this.series.data.length > 1) {
+                                //this.remove();
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        series: [{
+            name: 'sensor data',
+            data: (function () {
+                var data = [];
+                var time = (new Date()).getTime();
+                var i = 0;
+                data.push({
+                    x: time,
+                    y: Math.random()
+                });
+                return data;
+            }())
+        }]
+    });
+}
+
+function run_interval() {
     $(document).ready(function () {
         Highcharts.setOptions({
             global: {
