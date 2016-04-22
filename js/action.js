@@ -153,11 +153,9 @@ function run() {
     }
 
     // Get the data. The contents of the data file can be viewed at
-    // https://github.com/highcharts/highcharts/blob/master/samples/data/activity.json
-    //$.getJSON('https://www.highcharts.com/samples/data/jsonp.php?filename=activity.json&callback=?', function (activity) {
-    //$.getJSON('http://biloba.accrete.org:8000/highcharts/raw.json', function (json) {
-    var url = 'http://biloba.accrete.org:8000/highcharts/raw.txt'
-    retrieveAndConvertData(url, function (json) {
+    var url = 'http://biloba.accrete.org:8000/highcharts/raw.part.txt'
+    //retrieveAndConvertData(url, function (json) {
+    $.getJSON('http://biloba.accrete.org:8000/highcharts/raw.json', function (json) {
         $.each(json.datasets, function (i, dataset) {
 
             // Add X values
