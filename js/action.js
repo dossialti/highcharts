@@ -56,7 +56,7 @@ function retrieveAndConvertData(url, callback) {
 	var lines = data.split('\n');
 	for(var i = 0; i < lines.length; i++) {
             if (lines[i].length != 0) {
-                console.log('[' + i + '] ' + lines[i]);
+                //console.log('[' + i + '] ' + lines[i]);
 		var raw = JSON.parse(lines[i]);
 		var dt = Date.parse(raw[0].timestamp);
                 json.xData.push(dt);
@@ -93,10 +93,12 @@ function retrieveAndConvertData(url, callback) {
                 });
 	    }
 	}
+	/*
 	console.log(json.xData);
         $.each(json.datasets, function (i, dataset) {
 	    console.log('[' + i + ']: ' + dataset.data);
         });
+	*/
         callback(json);
     });
     console.log("out");
@@ -154,7 +156,7 @@ function run() {
     // https://github.com/highcharts/highcharts/blob/master/samples/data/activity.json
     //$.getJSON('https://www.highcharts.com/samples/data/jsonp.php?filename=activity.json&callback=?', function (activity) {
     //$.getJSON('http://biloba.accrete.org:8000/highcharts/raw.json', function (json) {
-    var url = 'http://biloba.accrete.org:8000/highcharts/raw.part.txt'
+    var url = 'http://biloba.accrete.org:8000/highcharts/raw.txt'
     retrieveAndConvertData(url, function (json) {
         $.each(json.datasets, function (i, dataset) {
 
