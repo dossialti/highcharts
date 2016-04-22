@@ -20,6 +20,16 @@ function loop(series) {
 	series.addPoint([x, y], true, true);
 }
 
+function retrieveAndConvertData(url, callback) {
+    console.log("in");
+    $.getJSON(url, function(json) {
+        callback(json);
+    });
+    $.getJSON(url, function(data) {
+    });
+    console.log("out");
+}
+
 function run() {
 
     /**
@@ -71,12 +81,14 @@ function run() {
     // Get the data. The contents of the data file can be viewed at
     // https://github.com/highcharts/highcharts/blob/master/samples/data/activity.json
     //$.getJSON('https://www.highcharts.com/samples/data/jsonp.php?filename=activity.json&callback=?', function (activity) {
-    $.getJSON('http://biloba.accrete.org:8000/highcharts/raw.json', function (activity) {
-        $.each(activity.datasets, function (i, dataset) {
+    //$.getJSON('http://biloba.accrete.org:8000/highcharts/raw.json', function (json) {
+    var url = 'http://biloba.accrete.org:8000/highcharts/raw.json'
+    retrieveAndConvertData(url, function (json) {
+        $.each(json.datasets, function (i, dataset) {
 
             // Add X values
             dataset.data = Highcharts.map(dataset.data, function (val, j) {
-                return [activity.xData[j], val];
+                return [json.xData[j], val];
             });
 
             $('<div class="chart">')
@@ -100,13 +112,17 @@ function run() {
                         enabled: false
                     },
                     xAxis: {
+                        type: 'datetime',
                         crosshair: true,
                         events: {
                             setExtremes: syncExtremes
-                        },
+                        }
+			/*
+			,
                         labels: {
                             format: '{value} km'
                         }
+			*/
                     },
                     yAxis: {
                         title: {
