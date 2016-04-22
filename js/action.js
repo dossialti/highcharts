@@ -22,10 +22,109 @@ function loop(series) {
 
 function retrieveAndConvertData(url, callback) {
     console.log("in");
-    $.getJSON(url, function(json) {
+    /* hijack here before dev finished */
+    /*
+    $.getJSON('http://biloba.accrete.org:8000/highcharts/raw.json', function(json) {
         callback(json);
     });
-    $.getJSON(url, function(data) {
+    */
+    var json = {
+        "xData": [],
+        "datasets": [{
+            "name": "Light",
+            "data": [],
+            "unit": "lux",
+            "type": "spline",
+            "valueDecimals": 0
+        }, {
+            "name": "Temperature",
+            "data": [],
+            "unit": "°C",
+            "type": "spline",
+            "valueDecimals": 2
+        }, {
+            "name": "Pressure",
+            "data": [],
+            "unit": "hPa",
+            "type": "area",
+            "valueDecimals": 2
+        }, {
+            "name": "Humidity",
+            "data": [],
+            "unit": "%",
+            "type": "spline",
+            "valueDecimals": 2
+        }, {
+            "name": "Average Current",
+            "data": [],
+            "unit": "mA",
+            "type": "spline",
+            "valueDecimals": 0
+        }, {
+            "name": "Voltage",
+            "data": [],
+            "unit": "mV",
+            "type": "spline",
+            "valueDecimals": 0
+        }, {
+            "name": "Available Energy",
+            "data": [],
+            "unit": "mWh",
+            "type": "area",
+            "valueDecimals": 0
+        }, {
+            "name": "TTE",
+            "data": [],
+            "unit": "mins.",
+            "type": "spline",
+            "valueDecimals": 0
+        }]
+    };
+    $.get(url, function(data) {
+	var lines = data.split('\n');
+	for(var i = 0; i < lines.length; i++) {
+            if (lines[i].length != 0) {
+                console.log('[' + i + '] ' + lines[i]);
+		var raw = JSON.parse(lines[i]);
+                json.xData.push(raw[0].timestamp);
+		json.datasets.forEach(function(obj) {
+	            switch (obj.name) {
+                        case "Light":
+	                    obj.data.push(raw[1].light);
+                            break;
+                        case "Temperature":
+	                    obj.data.push(raw[1].temp);
+                            break;
+                        case "Pressure":
+	                    obj.data.push(raw[1].pres);
+                            break;
+                        case "Humidity":
+	                    obj.data.push(raw[1].humi);
+                            break;
+                        case "Average Current":
+	                    obj.data.push(raw[1].ac);
+                            break;
+                        case "Voltage":
+	                    obj.data.push(raw[1].volt);
+                            break;
+                        case "Available Energy":
+	                    obj.data.push(raw[1].sae);
+                            break;
+                        case "TTE":
+	                    obj.data.push(raw[1].tte);
+                            break;
+			default:
+                            console.log("unhandled object name");
+                            break;
+		    }
+                });
+	    }
+	}
+	console.log(json.xData);
+        $.each(json.datasets, function (i, dataset) {
+	    console.log('[' + i + ']: ' + dataset.data);
+        });
+        callback(json);
     });
     console.log("out");
 }
@@ -82,7 +181,7 @@ function run() {
     // https://github.com/highcharts/highcharts/blob/master/samples/data/activity.json
     //$.getJSON('https://www.highcharts.com/samples/data/jsonp.php?filename=activity.json&callback=?', function (activity) {
     //$.getJSON('http://biloba.accrete.org:8000/highcharts/raw.json', function (json) {
-    var url = 'http://biloba.accrete.org:8000/highcharts/raw.json'
+    var url = 'http://biloba.accrete.org:8000/highcharts/raw.part.txt'
     retrieveAndConvertData(url, function (json) {
         $.each(json.datasets, function (i, dataset) {
 
